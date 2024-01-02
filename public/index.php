@@ -9,6 +9,8 @@ use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
 use Slim\Factory\AppFactory;
 use Slim\Factory\ServerRequestCreatorFactory;
+use Slim\Views\Twig;
+use Slim\Views\TwigMiddleware;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -75,6 +77,9 @@ $app->addBodyParsingMiddleware();
 // Add Error Middleware
 $errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails);
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
+
+$twig = Twig::create(__DIR__ . '/../public/templates', ['cache' => false]);
+$app->add(TwigMiddleware::create($app, $twig));
 
 // Run App & Emit Response
 $response = $app->handle($request);
